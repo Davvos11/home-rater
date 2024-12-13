@@ -8,3 +8,6 @@ dotenv = "0.15.0"
 google_maps = "3.7.4"
 tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
 thiserror = "2.0.6"
+axum = "0.7.9"
+tower = "0.5.2"
+serde = { version = "1.0.216", features = ["derive"] }

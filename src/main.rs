@@ -1,14 +1,39 @@
 mod errors;
 
-use std::env;
+use crate::errors::DirectionsError;
+use axum::extract::Query;
+use axum::routing::get;
+use axum::{Json, Router};
 use dotenv::dotenv;
 use google_maps::directions::response::status::Status;
-use google_maps::GoogleMapsClient;
 use google_maps::prelude::{Location, TravelMode};
-use crate::errors::DirectionsError;
+use google_maps::GoogleMapsClient;
+use serde::{Deserialize, Serialize};
+use std::env;
 
 #[tokio::main]
-async fn main() -> Result<(), DirectionsError> {
+async fn main() {
+    // build our application with a single route
+    let app = Router::new().route("/", get(get_lengths));
+
+    // run our app with hyper, listening globally on port 3000
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    eprintln!("Listening on: http://{}", &listener.local_addr().unwrap());
+    axum::serve(listener, app).await.unwrap();
+}
+
+#[derive(Deserialize)]
+struct QueryParams {
+    from: String
+}
+
+#[derive(Serialize)]
+struct Response {
+    walk: i64,
+    cycle: i64,
+}
+
+async fn get_lengths(Query(params): Query<QueryParams>) -> Result<Json<Response>, DirectionsError> {
     dotenv().expect("Could not load .env file");
     let api_key = env::var("MAPS_API_KEY")
         .expect("env variable MAPS_API_KEY not set");
@@ -16,14 +41,14 @@ async fn main() -> Result<(), DirectionsError> {
     let maps_client = GoogleMapsClient::try_new(api_key)
         .expect("Could not create Google Maps Client");
 
-    let walk = get_length_minutes(&maps_client, TravelMode::Walking, "Kerkstraat 44, Leerdam")
+    let from = params.from;
+
+    let walk = get_length_minutes(&maps_client, TravelMode::Walking, &from)
         .await?;
-    let cycle = get_length_minutes(&maps_client, TravelMode::Bicycling, "Kerkstraat 44, Leerdam")
+    let cycle = get_length_minutes(&maps_client, TravelMode::Bicycling, &from)
         .await?;
 
-    println!("Walk {walk} minutes, cycle {cycle} minutes");
-
-    Ok(())
+    Ok(Json(Response { walk, cycle }))
 }
 
 async fn get_length_minutes(maps_client: &GoogleMapsClient, travel_mode: TravelMode, from: &str) -> Result<i64, DirectionsError> {
