@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Huis Rating</title>
+    <style>
+        .rating {
+            display: none;
+        }
+
+        #error {
+            display: none;
+        }
+
+        .shown {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Huis Rating</h1>
+    <h2>Beoordeel een huis op een een groot aantal belangrijke criteria*</h2>
+    <h3>*de afstand tot De Rat</h3>
+</header>
+<main>
+    <div>
+        <label for="address">Adres:</label>
+        <input onsubmit="rate()" id="address" placeholder="Jongeneelstraat 4, Utrecht">
+        <button onclick="rate()">Rate!</button>
+    </div>
+    <div id="error"></div>
+    <div class="rating" id="rating-5">
+        5/5: Letterlijk De Rat
+    </div>
+    <div class="rating" id="rating-4">
+        4/5: <span class="walk-distance"></span> minuten lopen naar De Rat (<span class="cycle-distance"></span> minuten fietsen)
+    </div>
+    <div class="rating" id="rating-3">
+        3/5: <span class="walk-distance"></span> minuten lopen naar de rat (<span class="cycle-distance"></span> minuten fietsen)
+    </div>
+    <div class="rating" id="rating-2">
+        2/5: <span class="cycle-distance"></span> minuten fietsen naar de rat (<span class="walk-distance"></span> minuten lopen)
+    </div>
+    <div class="rating" id="rating-1">
+        1/5: <span class="cycle-distance"></span> minuten fietsen naar de rat
+    </div>
+    <div class="rating" id="rating0">
+        0/5: <span class="cycle-distance"></span> minuten fietsen naar de rat
+    </div>
+</main>
+<script>
+    async function rate() {
+        try {
+            const address = document.getElementById("address").value;
+            const res = await fetch("http://localhost:8080?from=" + encodeURI(address));
+            if (!res.ok) {
+                error(await res.text());
+                return;
+            }
+            const result = await res.json();
+            const walk = result['walk'];
+            const cycle = result['cycle'];
+
+            for (let elem of document.getElementsByClassName("walk-distance")) {
+                elem.innerText = walk;
+            }
+            for (let elem of document.getElementsByClassName("cycle-distance")) {
+                elem.innerText = cycle;
+            }
+
+            for (let elem of document.getElementsByClassName("rating")) {
+                elem.classList.remove("shown")
+            }
+
+            if (walk == 0) {
+                document.getElementById("rating-5").classList.add("shown")
+            } else if (walk <= 10) {
+                document.getElementById("rating-4").classList.add("shown")
+            } else if (walk <= 20) {
+                document.getElementById("rating-3").classList.add("shown")
+            } else if (cycle <= 10) {
+                document.getElementById("rating-3").classList.add("shown")
+            } else if (cycle <= 20) {
+                document.getElementById("rating-2").classList.add("shown")
+            } else if (cycle <= 30) {
+                document.getElementById("rating-1").classList.add("shown")
+            } else {
+                document.getElementById("rating-0").classList.add("shown")
+            }
+        } catch (e) {
+            error(e)
+        }
+    }
+
+    function error(msg) {
+        const err_elem = document.getElementById("error");
+        err_elem.innerText = msg;
+        err_elem.classList.add("shown")
+    }
+
+    document.getElementById("address").onkeydown = (ev) => {
+        if (ev.key === "Enter") {
+            rate()
+        }
+    }
+</script>
+</body>
+</html>
