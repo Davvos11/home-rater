@@ -4,6 +4,37 @@
     <meta charset="UTF-8">
     <title>Huis Rating</title>
     <style>
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+        }
+
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        #address {
+            width: 50%;
+            margin-left: 10px;
+            margin-right: 10px;
+            padding: 4px;
+        }
+
+        button {
+            padding: 4px;
+        }
+
+        .inputs {
+            padding-bottom: 10px;
+        }
+
+        .result {
+            font-size: large;
+        }
+
         .rating {
             display: none;
         }
@@ -21,32 +52,43 @@
 <header>
     <h1>Huis Rating</h1>
     <h2>Beoordeel een huis op een een groot aantal belangrijke criteria*</h2>
-    <h3>*de afstand tot De Rat</h3>
+    <h4>*de afstand tot De Rat</h4>
 </header>
 <main>
-    <div>
+    <div class="inputs">
         <label for="address">Adres:</label>
         <input onsubmit="rate()" id="address" placeholder="Jongeneelstraat 4, Utrecht">
         <button onclick="rate()">Rate!</button>
     </div>
     <div id="error"></div>
-    <div class="rating" id="rating-5">
-        5/5: Letterlijk De Rat
-    </div>
-    <div class="rating" id="rating-4">
-        4/5: <span class="walk-distance"></span> minuten lopen naar De Rat (<span class="cycle-distance"></span> minuten fietsen)
-    </div>
-    <div class="rating" id="rating-3">
-        3/5: <span class="walk-distance"></span> minuten lopen naar de rat (<span class="cycle-distance"></span> minuten fietsen)
-    </div>
-    <div class="rating" id="rating-2">
-        2/5: <span class="cycle-distance"></span> minuten fietsen naar de rat (<span class="walk-distance"></span> minuten lopen)
-    </div>
-    <div class="rating" id="rating-1">
-        1/5: <span class="cycle-distance"></span> minuten fietsen naar de rat
-    </div>
-    <div class="rating" id="rating0">
-        0/5: <span class="cycle-distance"></span> minuten fietsen naar de rat
+    <div class="result">
+        <div class="rating" id="rating-5">
+            ★★★★★ 5/5: <br>
+            Letterlijk De Rat
+        </div>
+        <div class="rating" id="rating-4">
+            ★★★★☆ 4/5: <br>
+            <span class="walk-distance"></span> minuten lopen naar De Rat (<span class="cycle-distance"></span>
+            minuten fietsen)
+        </div>
+        <div class="rating" id="rating-3">
+            ★★★☆☆ 3/5: <br>
+            <span class="walk-distance"></span> minuten lopen naar de rat (<span class="cycle-distance"></span>
+            minuten fietsen)
+        </div>
+        <div class="rating" id="rating-2">
+            ★★☆☆☆ 2/5: <br>
+            <span class="cycle-distance"></span> minuten fietsen naar de rat (<span class="walk-distance"></span>
+            minuten lopen)
+        </div>
+        <div class="rating" id="rating-1">
+            ★☆☆☆☆ 1/5: <br>
+            <span class="cycle-distance"></span> minuten fietsen naar de rat
+        </div>
+        <div class="rating" id="rating-0">
+            ☆☆☆☆☆ 0/5: <br>
+            <span class="cycle-distance"></span> minuten fietsen naar de rat
+        </div>
     </div>
 </main>
 <script>
@@ -88,8 +130,11 @@
             } else {
                 document.getElementById("rating-0").classList.add("shown")
             }
+
+            document.getElementById("error").classList.remove("shown")
         } catch (e) {
-            error(e)
+            error(e);
+            throw e;
         }
     }
 
