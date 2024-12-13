@@ -10,13 +10,23 @@ use google_maps::prelude::{Location, TravelMode};
 use google_maps::GoogleMapsClient;
 use serde::{Deserialize, Serialize};
 use std::env;
+use axum::http::Method;
+use tower_http::cors::CorsLayer;
 
 #[tokio::main]
 async fn main() {
-    // build our application with a single route
-    let app = Router::new().route("/", get(get_lengths));
+    let _ = dotenv();
+    let _ = env::var("MAPS_API_KEY")
+        .expect("env variable MAPS_API_KEY not set");
 
-    // run our app with hyper, listening globally on port 3000
+    let app = Router::new()
+        .route("/", get(get_lengths))
+        .layer(CorsLayer::new()
+            .allow_origin(vec!["https://dovatvis.nl".parse().unwrap(), "http://0.0.0.0:8080".parse().unwrap()])
+            .allow_methods([Method::GET, Method::POST, Method::PATCH, Method::DELETE])
+        )
+        ;
+
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
     eprintln!("Listening on: http://{}", &listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
@@ -24,7 +34,7 @@ async fn main() {
 
 #[derive(Deserialize)]
 struct QueryParams {
-    from: String
+    from: String,
 }
 
 #[derive(Serialize)]
@@ -34,7 +44,6 @@ struct Response {
 }
 
 async fn get_lengths(Query(params): Query<QueryParams>) -> Result<Json<Response>, DirectionsError> {
-    dotenv().expect("Could not load .env file");
     let api_key = env::var("MAPS_API_KEY")
         .expect("env variable MAPS_API_KEY not set");
 

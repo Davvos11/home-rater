@@ -95,7 +95,7 @@
     async function rate() {
         try {
             const address = document.getElementById("address").value;
-            const res = await fetch("http://localhost:8080?from=" + encodeURI(address));
+            const res = await fetch("https://home-rater.dovatvis.nl?from=" + encodeURI(address));
             if (!res.ok) {
                 error(await res.text());
                 return;
