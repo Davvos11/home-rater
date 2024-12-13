@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+dotenv = "0.15.0"
+google_maps = "3.7.4"
+tokio = { version = "1.0.0", features = ["rt", "rt-multi-thread", "macros"] }
