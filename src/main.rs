@@ -21,6 +21,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(get_lengths))
+        .route("/healthz", get(|| async { "ok" }))
         .layer(CorsLayer::new()
             .allow_origin(vec!["https://dovatvis.nl".parse().unwrap(), "http://0.0.0.0:8080".parse().unwrap()])
             .allow_methods([Method::GET, Method::POST, Method::PATCH, Method::DELETE])
