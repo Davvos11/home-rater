@@ -609,7 +609,7 @@ dependencies = [
  "serde",
  "simd-json",
  "stream_throttle",
- "thiserror 2.0.6",
+ "thiserror 2.0.21",
  "tracing",
 ]
 
@@ -675,7 +675,7 @@ dependencies = [
  "dotenv",
  "google_maps",
  "serde",
- "thiserror 2.0.6",
+ "thiserror 2.0.21",
  "tokio",
  "tower",
  "tower-http",
@@ -1867,11 +1867,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.6"
+version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fec2a1820ebd077e2b90c4df007bebf344cd394098a13c563957d0afc83ea47"
+checksum = "09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e"
 dependencies = [
- "thiserror-impl 2.0.6",
+ "thiserror-impl 2.0.21",
 ]
 
 [[package]]
@@ -1887,13 +1887,13 @@ dependencies = [
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.6"
+version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d65750cab40f4ff1929fb1ba509e9914eb756131cef4210da8d5d700d26f6312"
+checksum = "fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 3.0.9",
 ]
 
 [[package]]
