@@ -1,10 +1,10 @@
-FROM rust@sha256:8a4e90c7946b74626488b1446f712c0fe0ed1a596cbd3d871684bc9c5433ae07 as builder
+FROM rust@sha256:0b0ea86881537b3f645aace7e8e39556289f8787db057317c8d4978548213b9e as builder
 
 WORKDIR /usr/src
 COPY . .
 RUN cargo build --release
 
-FROM rust:slim@sha256:7eab7ce19273ce785e0ca7578bdf7bc1fcbae621775a8197379a04c9f6e03cd5 as runner
+FROM rust:slim@sha256:cc9edbcadf2c27013a642b1d1bb7504e26b1142d6b5ebe58f64cf2eb2bc128ae as runner
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/target/release/home-rater ./
 
